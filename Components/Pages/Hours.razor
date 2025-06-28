@@ -1,0 +1,84 @@
+﻿@page "/hours"
+@rendermode InteractiveServer
+
+@inject EmployeeService EmpService;
+
+<PageTitle>Hours</PageTitle>
+
+<h1>Hours</h1>
+
+@if (showForm)
+{
+    <EditForm Model="EmpService.newHours" OnValidSubmit="AddHours">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label>Employee ID</label>
+            <InputSelect class="form-control" @bind-Value="EmpService.newHours.employeeId">
+                <option value="">-- Select Employee --</option>
+                @foreach (var employee in employees)
+                {
+                    <option value="@employee.EmployeeId">@employee.FirstName @employee.LastName (@employee.EmployeeId)</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-3">
+            <label>Hours:</label>
+            <InputNumber class="form-control" @bind-Value="EmpService.newHours.hours" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Submit</button>
+        <button type="button" class="btn btn-secondary" @onclick="HideForm">Cancel</button>
+    </EditForm>
+}
+else
+{
+    <button class="btn btn-primary mb-3" @onclick="ShowForm">Add Hours</button>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Employee ID</th>
+            <th>Name</th>
+            <th>Hours</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in employees)
+        {
+            <tr>
+                <td>@employee.EmployeeId</td>
+                <td>@employee.FirstName @employee.LastName</td>
+                <td>@employee.Hours</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private bool showForm = false;
+    private List<Employee> employees = new();
+
+    private async Task LoadEmployees() {
+        employees = await EmpService.GetEmployeesAsync();
+    }
+
+    protected override async void OnInitialized() {
+        await LoadEmployees();
+    }
+
+    private void HideForm() => showForm = false;
+    private void ShowForm() => showForm = true;
+
+    private async Task AddHours() {
+        await EmpService.AddHoursAsync(EmpService.newHours.employeeId, EmpService.newHours.hours);
+
+        HideForm();
+        EmpService.newHours = new();
+        StateHasChanged();
+    }
+
+}

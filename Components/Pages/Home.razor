@@ -1,0 +1,44 @@
+﻿@page "/"
+
+@inject EmployeeService EmpService
+<PageTitle>Home</PageTitle>
+
+@if (employees == null || employees.Count() == 0)
+{
+    <p>No Employees...</p>
+} else {
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>Name</th>
+                <th>Hours</th>
+                <th>Payrate</th>
+                <th>Total Pay</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in employees) {
+                <tr>
+                    <th>@employee.EmployeeId</th>
+                    <th>@employee.FirstName @employee.LastName</th>
+                    <th>@employee.Hours</th>
+                    <th>@employee.Payrate</th>
+                    <th>$@(employee.Hours * employee.Payrate)</th>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Employee> employees = new();
+
+    private async Task LoadEmployees() {
+        employees = await EmpService.GetEmployeesAsync();
+    }
+
+    protected override async void OnInitialized() {
+        await LoadEmployees();
+    }
+}

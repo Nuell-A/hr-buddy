@@ -1,0 +1,103 @@
+﻿@page "/employees"
+@rendermode InteractiveServer
+
+@inject EmployeeService EmpService
+
+<PageTitle>Employees</PageTitle>
+
+<h1>Employees</h1>
+
+@if (showForm)
+{
+    <EditForm Model="newEmployee" OnValidSubmit="AddEmployee">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label>First Name:</label>
+            <InputText class="form-control" @bind-Value="newEmployee.FirstName" />
+        </div>
+
+        <div class="mb-3">
+            <label>Last Name:</label>
+            <InputText class="form-control" @bind-Value="newEmployee.LastName" />
+        </div>
+
+        <div class="mb-3">
+            <label>Employee ID:</label>
+            <InputNumber class="form-control" @bind-Value="newEmployee.EmployeeId" />
+        </div>
+
+        <div class="mb-3">
+            <label>Payrate:</label>
+            <InputNumber class="form-control" @bind-Value="newEmployee.Payrate" />
+        </div>
+
+        <div class="mb-3">
+            <label>Address:</label>
+            <InputText class="form-control" @bind-Value="newEmployee.Address" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Submit</button>
+        <button type="button" class="btn btn-secondary" @onclick="HideForm">Cancel</button>
+    </EditForm>
+}
+else
+{
+    <button class="btn btn-primary mb-3" @onclick="ShowForm">Add Employee</button>
+}
+
+@if (employees == null || employees.Count() == 0)
+{
+    <p><em>Loading...</em></p>}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>Name</th>
+                <th>Payrate</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in employees)
+            {
+                <tr>
+                    <td>@employee.EmployeeId</td>
+                    <td>@employee.FirstName @employee.LastName</td>
+                    <td>@employee.Payrate</td>
+                    <td>@employee.Address</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private bool showForm = false;
+    private List<Employee> employees = new();
+    private Employee newEmployee = new();
+
+    private async Task LoadEmployees() {
+        employees = await EmpService.GetEmployeesAsync();
+    }
+
+    protected override async void OnInitialized() {
+        await LoadEmployees();
+    }
+
+
+    private async Task AddEmployee()
+    {
+        await EmpService.AddEmployeeAsync(newEmployee);
+
+        HideForm();
+        newEmployee = new();
+        StateHasChanged();
+    }
+
+    private void ShowForm() => showForm = true;
+    private void HideForm() => showForm = false;
+}

@@ -1,0 +1,149 @@
+# Build artifacts
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code settings
+.vscode/
+
+# Rider / JetBrains
+.idea/
+
+# ASP.NET runtime-generated files
+wwwroot/lib/
+node_modules/
+dist/
+
+# SQLite database (optional - only ignore if generated locally)
+*.db
+*.sqlite
+*.sqlite3
+
+# Entity Framework Migrations metadata (optional)
+Migrations/
+
+# Logs
+*.log
+logs/
+
+# Secrets (if you're storing any manually, consider using Secret Manager instead)
+secrets.json
+
+# Other files
+*.swp
+*.bak
+*.tmp
+*.DS_Store
+Thumbs.db
+
+# dotnet-ef tool assets
+.ef/
+
+# Auto-generated files
+Generated/
+
+# macOS/Linux files
+*.DS_Store
+*.AppleDouble
+*.LSOverride
+
+# Windows image file caches
+ehthumbs.db
+Thumbs.db
+
+# Resharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# Rider
+.idea/
+
+# Coverage reports
+coverage/
+*.coverage
+*.coveragexml
+
+# NCrunch
+*.ncrunch*
+*.crunch.xml
+_NCrunch_*
+# Build artifacts
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code settings
+.vscode/
+
+# Rider / JetBrains
+.idea/
+
+# ASP.NET runtime-generated files
+wwwroot/lib/
+node_modules/
+dist/
+
+# SQLite database (optional - only ignore if generated locally)
+*.db
+*.sqlite
+*.sqlite3
+
+# Entity Framework Migrations metadata (optional)
+Migrations/
+
+# Logs
+*.log
+logs/
+
+# Secrets (if you're storing any manually, consider using Secret Manager instead)
+secrets.json
+
+# Other files
+*.swp
+*.bak
+*.tmp
+*.DS_Store
+Thumbs.db
+
+# dotnet-ef tool assets
+.ef/
+
+# Auto-generated files
+Generated/
+
+# macOS/Linux files
+*.DS_Store
+*.AppleDouble
+*.LSOverride
+
+# Windows image file caches
+ehthumbs.db
+Thumbs.db
+
+# Resharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# Rider
+.idea/
+
+# Coverage reports
+coverage/
+*.coverage
+*.coveragexml
+
+# NCrunch
+*.ncrunch*
+*.crunch.xml
+_NCrunch_*
+
