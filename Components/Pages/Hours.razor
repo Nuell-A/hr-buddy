@@ -7,6 +7,27 @@
 
 <h1>Hours</h1>
 
+@if (showEditForm)
+{
+    <EditForm Model="editingEmployee" OnValidSubmit="ModifyHours">
+        <div class="mb-3">
+            <label>Employee ID:</label>
+            <p>@editingEmployee.EmployeeId</p>
+        </div>
+        <div class="mb-3">
+            <label>Name:</label>
+            <p>@editingEmployee.FirstName @editingEmployee.LastName</p>
+        </div>
+
+        <div class="mb-3">
+            <label>Hours:</label>
+            <InputNumber class="form-control" @bind-Value="editingEmployee.Hours" />
+        </div>
+        <button class="btn btn-warning" type="submit">Update</button> 
+        <button type="button" class="btn btn-secondary" @onclick="HideEditForm">Cancel</button>
+    </EditForm>
+}
+
 @if (showForm)
 {
     <EditForm Model="EmpService.newHours" OnValidSubmit="AddHours">
@@ -44,6 +65,7 @@ else
             <th>Employee ID</th>
             <th>Name</th>
             <th>Hours</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -53,6 +75,15 @@ else
                 <td>@employee.EmployeeId</td>
                 <td>@employee.FirstName @employee.LastName</td>
                 <td>@employee.Hours</td>
+                <td>
+                    <button class="bt-img" @onclick="@(() => ModifyHoursCopy(employee))">
+                        <img src="images/edit_24.png" alt="Edit" />
+                    </button>
+
+                    <button class="bt-img" @onclick="@(() => ZeroizeHours(employee))">
+                        <img src="images/delete_24.png" alt="Delete" />
+                    </button>
+                </td>
             </tr>
         }
     </tbody>
@@ -60,7 +91,9 @@ else
 
 @code {
     private bool showForm = false;
+    private bool showEditForm = false;
     private List<Employee> employees = new();
+    private Employee editingEmployee = new();
 
     private async Task LoadEmployees() {
         employees = await EmpService.GetEmployeesAsync();
@@ -70,8 +103,36 @@ else
         await LoadEmployees();
     }
 
+    private void ModifyHoursCopy(Employee employee) {
+        // Copy over attributes of existing employee to pre-fill form
+        editingEmployee = new Employee
+        {
+            EmployeeId = employee.EmployeeId,
+            FirstName = employee.FirstName,
+            LastName = employee.LastName,
+            Address = employee.Address,
+            Payrate = employee.Payrate,
+            Hours = employee.Hours
+        };
+
+        showEditForm = true;
+    }
+
+    private async Task ModifyHours() {
+        await EmpService.ModifyHoursAsync(editingEmployee);
+        await LoadEmployees();
+        HideEditForm();
+    }
+
+    private async Task ZeroizeHours(Employee employee) {
+        await EmpService.ZeroizeHoursAsync(employee);
+        await LoadEmployees();
+    }
+
+
     private void HideForm() => showForm = false;
     private void ShowForm() => showForm = true;
+    private void HideEditForm() => showEditForm = false;
 
     private async Task AddHours() {
         await EmpService.AddHoursAsync(EmpService.newHours.employeeId, EmpService.newHours.hours);

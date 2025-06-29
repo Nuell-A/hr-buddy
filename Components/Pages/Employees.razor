@@ -7,6 +7,32 @@
 
 <h1>Employees</h1>
 
+@if (showEditForm)
+{
+    <EditForm Model="editingEmployee" OnValidSubmit="ModifyEmployee">
+        <div class="mb-3">
+            <label>First Name:</label>
+            <InputText class="form-control" @bind-Value="editingEmployee.FirstName" />
+        </div>
+        <div class="mb-3">
+            <label>Last Name:</label>
+            <InputText class="form-control" @bind-Value="editingEmployee.LastName" />
+        </div>
+    
+        <div class="mb-3">
+            <label>Payrate:</label>
+            <InputNumber class="form-control" @bind-Value="editingEmployee.Payrate" />
+        </div>
+
+        <div class="mb-3">
+            <label>Address:</label>
+            <InputText class="form-control" @bind-Value="editingEmployee.Address" />
+        </div>
+        <button class="btn btn-warning" type="submit">Update</button> 
+        <button type="button" class="btn btn-secondary" @onclick="HideEditForm">Cancel</button>
+    </EditForm>
+}
+
 @if (showForm)
 {
     <EditForm Model="newEmployee" OnValidSubmit="AddEmployee">
@@ -59,6 +85,7 @@ else
                 <th>Name</th>
                 <th>Payrate</th>
                 <th>Address</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -69,6 +96,15 @@ else
                     <td>@employee.FirstName @employee.LastName</td>
                     <td>@employee.Payrate</td>
                     <td>@employee.Address</td>
+                    <td>
+                        <button class="bt-img" @onclick="@(() => ModifyEmployeeCopy(employee))">
+                            <img src="images/edit_24.png" alt="Edit" />
+                        </button>
+
+                        <button class="bt-img" @onclick="@(() => DeleteEmployee(employee))">
+                            <img src="images/delete_24.png" alt="Delete" />
+                        </button>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -77,8 +113,10 @@ else
 
 @code {
     private bool showForm = false;
+    private bool showEditForm = false;
     private List<Employee> employees = new();
     private Employee newEmployee = new();
+    private Employee editingEmployee = new();
 
     private async Task LoadEmployees() {
         employees = await EmpService.GetEmployeesAsync();
@@ -91,13 +129,42 @@ else
 
     private async Task AddEmployee()
     {
+        // Sends employee to database
         await EmpService.AddEmployeeAsync(newEmployee);
 
         HideForm();
         newEmployee = new();
-        StateHasChanged();
+        await LoadEmployees();
+    }
+
+    private void ModifyEmployeeCopy(Employee employee) {
+        // Copy over attributes of existing employee to pre-fill form
+        editingEmployee = new Employee
+        {
+            EmployeeId = employee.EmployeeId,
+            FirstName = employee.FirstName,
+            LastName = employee.LastName,
+            Address = employee.Address,
+            Payrate = employee.Payrate,
+            Hours = employee.Hours
+        };
+
+        showEditForm = true;
+    }
+
+    private async Task ModifyEmployee() {
+        // After modifications are submitted, sends to employee service for database
+        await EmpService.ModifyEmployeeAsync(editingEmployee);
+        showEditForm = false;
+        await LoadEmployees();
+    }
+
+    private async Task DeleteEmployee(Employee employee) {
+        await EmpService.DeleteEmployeeAsync(employee);
+        await LoadEmployees();
     }
 
     private void ShowForm() => showForm = true;
     private void HideForm() => showForm = false;
+    private void HideEditForm() => showEditForm = false;
 }
